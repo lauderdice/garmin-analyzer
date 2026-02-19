@@ -1,0 +1,41 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+.Python
+*.egg-info/
+dist/
+.venv/
+venv/
+.env
+.env.local
+
+# UV
+uv.lock
+
+# Node
+node_modules/
+.next/
+out/
+.env*.local
+
+# Docker
+.dockerignore
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# GCP credentials
+*.json
+service-account-key.json
+
+# Garmin tokens
+.garminconnect/
+garmin_tokens.json
