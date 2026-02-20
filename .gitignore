@@ -19,8 +19,6 @@ node_modules/
 out/
 .env*.local
 
-# Docker
-.dockerignore
 
 # IDE
 .vscode/
@@ -32,9 +30,10 @@ out/
 .DS_Store
 Thumbs.db
 
-# GCP credentials
-*.json
+# GCP / service-account key files (be specific — don't exclude package.json etc.)
 service-account-key.json
+*-sa-key.json
+gcp-credentials.json
 
 # Garmin tokens
 .garminconnect/
