@@ -28,7 +28,10 @@ jobs:
           script: |
             set -e
 
-            # Pull latest code
+            # Clone repo on first run, otherwise pull latest
+            if [ ! -d ~/garmin-analyzer ]; then
+              git clone https://github.com/lauderdice/garmin-analyzer.git ~/garmin-analyzer
+            fi
             cd ~/garmin-analyzer
             git fetch origin main
             git checkout main
@@ -41,8 +44,10 @@ jobs:
             EOF
             chmod 600 .env
 
+            # Enable Tailscale Funnel on first run (idempotent)
+            sudo tailscale funnel 3000
+
             # Rebuild and restart containers
-            docker compose pull --quiet 2>/dev/null || true
             docker compose up --build -d
 
             # Clean up dangling images
