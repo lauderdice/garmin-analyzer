@@ -28,6 +28,12 @@ jobs:
           script: |
             set -e
 
+            # Non-interactive SSH shells don't source ~/.zshrc, so Docker (installed
+            # via Docker Desktop or Homebrew) won't be on PATH. Add the common macOS
+            # locations explicitly to cover both Intel (/usr/local/bin) and
+            # Apple Silicon (/opt/homebrew/bin) installs.
+            export PATH="/usr/local/bin:/opt/homebrew/bin:$PATH"
+
             # Clone repo on first run, otherwise pull latest
             if [ ! -d ~/garmin-analyzer ]; then
               git clone https://github.com/lauderdice/garmin-analyzer.git ~/garmin-analyzer
