@@ -1,15 +1,14 @@
 #!/bin/bash
-# Pre-flight check for the Mac mini.
-# Run once to confirm the machine is ready for CI deployments.
-# CI handles everything else (clone, .env, Funnel, Docker).
+# One-time setup for the Mac mini.
+# Run this directly on the Mac mini before the first CI deployment.
 set -e
 
-echo "=== Garmin Analyzer — Mac mini pre-flight check ==="
+echo "=== Garmin Analyzer — Mac mini setup ==="
 
 # ── Prerequisites ──────────────────────────────────────────────────────────────
 for cmd in git docker tailscale; do
   if ! command -v "$cmd" &>/dev/null; then
-    echo "ERROR: '$cmd' is not installed. Install it before triggering CI."
+    echo "ERROR: '$cmd' is not installed. Install it and re-run."
     exit 1
   fi
 done
@@ -27,5 +26,11 @@ if [ ! -f ~/.ssh/authorized_keys ] || [ ! -s ~/.ssh/authorized_keys ]; then
   echo "WARNING: ~/.ssh/authorized_keys is empty. Add the CI public key before deploying."
 fi
 
+# ── Enable Tailscale Funnel (persistent — only needs to be run once) ───────────
 echo ""
-echo "Machine is ready. Trigger a deployment by pushing to main or running the workflow manually."
+echo "Enabling Tailscale Funnel on port 3000..."
+sudo tailscale funnel 3000
+echo "Funnel enabled."
+
+echo ""
+echo "Setup complete. Trigger a deployment by pushing to main or running the workflow manually."
