@@ -44,9 +44,6 @@ jobs:
             EOF
             chmod 600 .env
 
-            # Enable Tailscale Funnel on first run (idempotent)
-            sudo tailscale funnel 3000
-
             # Rebuild and restart containers
             docker compose up --build -d
 
