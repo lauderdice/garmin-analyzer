@@ -27,6 +27,7 @@ jobs:
           envs: GARMIN_USERNAME,GARMIN_PASSWORD
           script: |
             set -e
+            export PATH="/usr/local/bin:/opt/homebrew/bin:/opt/homebrew/sbin:$PATH"
 
             # Clone repo on first run, otherwise pull latest
             if [ ! -d ~/garmin-analyzer ]; then
