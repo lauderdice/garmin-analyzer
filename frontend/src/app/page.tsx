@@ -85,7 +85,7 @@ export default async function OverviewPage() {
         </section>
       ) : (
         <div className="bg-slate-800 border border-slate-700 rounded-xl p-6 text-slate-400 text-sm">
-          Could not load today's stats. Check that the backend is running and Garmin
+          Could not load today&apos;s stats. Check that the backend is running and Garmin
           credentials are set.
         </div>
       )}
