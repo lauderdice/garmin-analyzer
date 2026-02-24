@@ -1,0 +1,52 @@
+name: Deploy to Mac mini (Tailscale)
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    name: Deploy → Mac mini
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Connect to Tailscale
+        uses: tailscale/github-action@v2
+        with:
+          oauth-client-id: ${{ secrets.TS_OAUTH_CLIENT_ID }}
+          oauth-secret: ${{ secrets.TS_OAUTH_SECRET }}
+          tags: tag:ci
+
+      - name: Deploy via SSH
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.MAC_MINI_HOST }}
+          username: ${{ secrets.MAC_MINI_USER }}
+          key: ${{ secrets.MAC_MINI_SSH_KEY }}
+          envs: GARMIN_USERNAME,GARMIN_PASSWORD
+          script: |
+            set -e
+
+            # Pull latest code
+            cd ~/garmin-analyzer
+            git fetch origin main
+            git checkout main
+            git reset --hard origin/main
+
+            # Write credentials to .env (never committed to repo)
+            cat > .env <<EOF
+            GARMIN_USERNAME=${{ secrets.GARMIN_USERNAME }}
+            GARMIN_PASSWORD=${{ secrets.GARMIN_PASSWORD }}
+            EOF
+            chmod 600 .env
+
+            # Rebuild and restart containers
+            docker compose pull --quiet 2>/dev/null || true
+            docker compose up --build -d
+
+            # Clean up dangling images
+            docker image prune -f
+
+            echo "Deployment complete."
+            docker compose ps
