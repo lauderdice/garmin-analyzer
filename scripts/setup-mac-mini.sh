@@ -1,6 +1,7 @@
 #!/bin/bash
 # One-time setup script for the Mac mini.
-# Run this directly on the Mac mini, not via CI.
+# Run this directly on the Mac mini before the first CI deployment.
+# CI handles all docker build/run — this only sets up what CI can't.
 set -e
 
 echo "=== Garmin Analyzer — Mac mini setup ==="
@@ -42,20 +43,12 @@ else
   echo ".env already exists — skipping credential prompt."
 fi
 
-# ── 4. Build and start containers ─────────────────────────────────────────────
-echo ""
-echo "Building and starting containers..."
-docker compose up --build -d
-
-echo ""
-echo "Containers running:"
-docker compose ps
-
-# ── 5. Enable Tailscale Funnel on port 3000 ───────────────────────────────────
+# ── 4. Enable Tailscale Funnel on port 3000 ───────────────────────────────────
 echo ""
 echo "Enabling Tailscale Funnel on port 3000..."
 sudo tailscale funnel 3000
 
 echo ""
 echo "=== Setup complete ==="
-echo "Your app is now available at: https://$(tailscale status --json | python3 -c "import sys,json; d=json.load(sys.stdin); print(d['Self']['DNSName'].rstrip('.'))" 2>/dev/null || echo '<your-tailscale-hostname>')"
+echo "Trigger a CI deployment (push to main or run the workflow manually) to start the app."
+echo "It will be available at: https://$(tailscale status --json | python3 -c "import sys,json; d=json.load(sys.stdin); print(d['Self']['DNSName'].rstrip('.'))" 2>/dev/null || echo '<your-tailscale-hostname>')"
